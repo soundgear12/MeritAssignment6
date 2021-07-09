@@ -9,7 +9,7 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "AccountHolder", catalog = "MeritBank")
+@Table(name = "AccountHolders", catalog = "MeritBank")
 public class AccountHolder {
 
 	
@@ -17,22 +17,22 @@ public class AccountHolder {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
-	int id;
-    //region InstanceVariables
+	private int id;
+    
 	
-	@OneToMany(cascade= CascadeType.ALL, mappedBy = "accountHolder")
-    private CheckingAccount[] checkingAccounts;
+	@OneToMany(fetch = FetchType.LAZY)
+    private List<CheckingAccount> checkingAccounts;
+	 
+	@OneToMany(fetch = FetchType.LAZY)
+    private  List<SavingsAccount> savingsAccounts;
 	
-	@OneToMany(cascade= CascadeType.ALL, mappedBy = "accountHolder")
-    private  SavingsAccount[] savingsAccounts;
-	
-	@OneToMany(cascade= CascadeType.ALL, mappedBy = "accountHolder")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="accHolder")
     private  List<CDAccount> cdAccounts;
 	
-	@OneToMany(cascade= CascadeType.ALL, mappedBy = "accountHolder")
+	
     private CDOfferings[] cdOfferings;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder")
+	@OneToOne(cascade = CascadeType.ALL,  fetch = FetchType.EAGER)
 	private AccountHoldersContactDetails accountHolderContactDetails;
 	
     public AccountHoldersContactDetails getAccountHolderContactDetails() {
@@ -60,10 +60,9 @@ public class AccountHolder {
     
     //region Constructors
     public AccountHolder() {
-    	this.id = id;
         
-        this.checkingAccounts = new CheckingAccount[0];
-		this.savingsAccounts = new SavingsAccount[0];
+        this.checkingAccounts = new ArrayList <CheckingAccount>();
+		this.savingsAccounts =new ArrayList <SavingsAccount>();
 		this.cdAccounts = new ArrayList <CDAccount>();
 		this.combinedBalance = 0;
     }
@@ -73,7 +72,7 @@ public class AccountHolder {
 
     //region Basic Info Getters/Setters
     
-    public int getId() {
+    public long getId() {
 		return id;
 	}
 
@@ -87,7 +86,7 @@ public class AccountHolder {
 
 
 	public int getNumberOfCheckingAccounts() {
-		return this.checkingAccounts.length;
+		return this.checkingAccounts.size();
 	}
 
 
@@ -100,9 +99,9 @@ public class AccountHolder {
 
 	public double getCheckingBalance() {
 		double chkBal = 0;
-		for (int i = 0; i < checkingAccounts.length; i++) {
+		for (int i = 0; i < checkingAccounts.size(); i++) {
 			
-			chkBal += checkingAccounts[i].getBalance();
+			chkBal += checkingAccounts.get(i).getBalance();
 		}
 		return chkBal;
 	}
@@ -114,7 +113,7 @@ public class AccountHolder {
 
 
 	public int getNumberOfSavingsAccounts() {
-		return this.savingsAccounts.length;
+		return this.savingsAccounts.size();
 	}
 
 
@@ -127,9 +126,9 @@ public class AccountHolder {
 
 	public double getSavingsBalance() {
 		double svgBal = 0;
-		for (int i = 0; i < savingsAccounts.length; i++) {
+		for (int i = 0; i < savingsAccounts.size(); i++) {
 			
-			svgBal += savingsAccounts[i].getBalance();
+			svgBal += savingsAccounts.get(i).getBalance();
 		}
 		return svgBal;
 	}
@@ -177,14 +176,18 @@ public class AccountHolder {
 
 
 
-	public CheckingAccount[] getCheckingAccounts() {
-		return checkingAccounts;
+	public List<CheckingAccount> getCheckingAccounts() {
+		return this.checkingAccounts;
 	}
 
 
 
-	public SavingsAccount[] getSavingsAccounts() {
-		return savingsAccounts;
+	public List<SavingsAccount> getSavingsAccounts() {
+		return this.savingsAccounts;
+	}
+	
+	public void setSavingsAccounts(List<SavingsAccount> savingsAccounts) {
+		this.savingsAccounts = savingsAccounts;
 	}
 
 
@@ -207,15 +210,14 @@ public class AccountHolder {
 			return null;
 		}
 		CheckingAccount ca = new CheckingAccount(openingBalance);
-		return addCheckingAccount(ca); 
+		
+		return this.addCheckingAccount(ca); 
 	
 	}
 	
 	public  CheckingAccount addCheckingAccount(CheckingAccount chk) {
-			CheckingAccount[] temp = Arrays.copyOf(checkingAccounts, checkingAccounts.length + 1);
-			temp[temp.length - 1] = chk;
-			checkingAccounts = temp;
-		return chk;   
+			this.checkingAccounts.add(chk);
+			return chk;   
     }
 	
 
@@ -237,15 +239,19 @@ public class AccountHolder {
 		}
 		
 		SavingsAccount sa = new SavingsAccount(openingBalance);
-		return addSavingsAccount(sa);
+		return this.addSavingsAccount(sa);
 	}
 	public SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) {
-			SavingsAccount[] temp = Arrays.copyOf(savingsAccounts, savingsAccounts.length + 1);
-			temp[temp.length - 1] = savingsAccount;
-			savingsAccounts = temp;
+		this.savingsAccounts.add(savingsAccount);  
 		return savingsAccount;
 	}
     //region CDAccount Methods
+
+
+
+	public void setCdAccounts(List<CDAccount> cdAccounts) {
+		this.cdAccounts = cdAccounts;
+	}
     
 	
 	

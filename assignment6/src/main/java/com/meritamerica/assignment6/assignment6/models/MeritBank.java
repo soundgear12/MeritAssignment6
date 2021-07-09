@@ -162,11 +162,11 @@ public class MeritBank {
 	static void setNextAccountNumber(long nextAccountNumber) {
 		nextAccountNumber = accountNumber;
 	}
-	static long getNextAccountNumber() {
+	static int getNextAccountNumber() {
 		accountNumber++;
 		return accountNumber;
 	}
-	static long accountNumber;
+	static int accountNumber;
 	
 	public double getTotalBalances() {
 		double total = 0;

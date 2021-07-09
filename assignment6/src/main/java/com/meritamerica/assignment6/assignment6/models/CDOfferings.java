@@ -3,17 +3,24 @@ package com.meritamerica.assignment6.assignment6.models;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Entity
-@Table(name = "CDOffering", catalog = "MeritAmerica")
+@Table(name = "CDOfferings", catalog = "MeritAmerica")
 public class CDOfferings {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "offerings_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
+	@NotNull
+	@Positive
     private int term;
+	
+	@NotNull
+	@Positive
     private double interestRate;
 
     public CDOfferings(int term, double interestRate) {
@@ -29,7 +36,7 @@ public class CDOfferings {
 		*/
 	}
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cdOffering")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "offering")
     private  List<CDAccount> cdAccounts;
 
     public List<CDAccount> getCdAccounts() {

@@ -21,24 +21,24 @@ public abstract class BankAccount {
     private Date accountOpenedOn;
     
     @Id
-    @Column(name="accountNumber")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long accountNumber;
-    private double interestRate;
+    @Column
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private int accountNumber;
+    protected double interestRate;
     private double balance;
  
     // endregion
     
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "accountNumber", referencedColumnName = "id")
-    private AccountHolder accountHolder;
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private AccountHolder accHolder;
     
     public AccountHolder getAccountHolder() {
-		return accountHolder;
+		return accHolder;
 	}
 
 	public void setAccountHolder(AccountHolder accountHolder) {
-		this.accountHolder = accountHolder;
+		this.accHolder = accountHolder;
 	}
 
 	// region constructors
@@ -50,7 +50,7 @@ public abstract class BankAccount {
         this(MeritBank.getNextAccountNumber(), balance, interestRate, accountOpenedOn);
     }
 
-    protected BankAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn) {
+    protected BankAccount(int accountNumber, double balance, double interestRate, Date accountOpenedOn) {
     	this.accountNumber = accountNumber;
         this.balance = balance;
         this.interestRate = interestRate;
@@ -73,7 +73,7 @@ public abstract class BankAccount {
 		this.accountOpenedOn = accountOpenedOn;
 	}
 
-	public void setAccountNumber(Long accountNumber) {
+	public void setAccountNumber(int accountNumber) {
 		this.accountNumber = accountNumber;
 	}
 

@@ -18,28 +18,31 @@ import com.meritamerica.assignment6.assignment6.exceptions.NoSuchResourceFoundEx
 import com.meritamerica.assignment6.assignment6.models.AccountHolder;
 import com.meritamerica.assignment6.assignment6.models.CDOfferings;
 import com.meritamerica.assignment6.assignment6.models.MeritBank;
+import com.meritamerica.assignment6.assignment6.repo.CDOfferingsRepository;
 
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.HttpStatus;
 
 
 
 @RestController
+@RequestMapping(value="/CDOfferings")
 public class CDOfferingsController {
 	
-	ArrayList<CDOfferings> cdOfferings = new ArrayList<CDOfferings>();
+	@Autowired
+	CDOfferingsRepository cdOfferingsRepo;
 	
 	
 	@GetMapping(value = "/CDOfferings")
 	@ResponseStatus(HttpStatus.OK)
 	public List<CDOfferings> getcdOfferings(){
-		return MeritBank.getCDOfferings();
+		return cdOfferingsRepo.findAll();
 	}
 	
 	@PostMapping(value = "/CDOfferings")
 	@ResponseStatus(HttpStatus.CREATED)
 	public CDOfferings addcdOfferings(@RequestBody @Valid CDOfferings cdOffering) {	
-		MeritBank.addCDO(cdOffering);
-		return cdOffering;
+		return cdOfferingsRepo.save(cdOffering);
 	}
 	
 	@GetMapping(value = "/CDOfferings/{id}")
