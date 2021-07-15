@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 //@JsonIgnoreProperties(value = { "accHolder" })
 public class CheckingAccount extends BankAccount implements Serializable {
 
-	@Id
+	/*@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	
@@ -28,6 +28,7 @@ public class CheckingAccount extends BankAccount implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
+	*/
 	
     public CheckingAccount(double openingBalance) { super(openingBalance, 0.0001, new Date()); }
 
